@@ -1,7 +1,7 @@
 <template>
   <b-navbar toggleable="lg" type="dark" variant="dark">
     <div class="container">
-      <b-collapse id="nav-collapse" is-nav>
+      <b-collapse id="nav-collapse-1" is-nav>
         <b-navbar-nav>
           <router-link :to="{ name: 'homeLink' }" tag="li" class="nav-item">
             <a class="nav-link" href="#">home</a>

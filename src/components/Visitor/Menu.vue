@@ -60,13 +60,23 @@
               </tr>
             </tbody>
           </table>
-          <p>Total Order {{ total | currency }}:</p>
+          <p>Total Order {{ total | currency }}</p>
           <button class="btn btn-block btn-success" @click="addNewOrder">
-            place Order
+            <b-icon
+              icon="arrow-clockwise"
+              animation="spin"
+              font-scale="1"
+              v-if="loading"
+            ></b-icon>
+            <template v-else>place Order</template>
           </button>
         </div>
         <div v-else>
-          <p>{{ BasketText }}</p>
+          <alert-app
+            :showDismissibleAlert="showDismissibleAlert"
+            :responseStatus="responseStatus"
+            :alertMessage="BasketText"
+          ></alert-app>
         </div>
       </div>
     </div>
@@ -75,37 +85,29 @@
 
 <script>
 import { mapGetters } from "vuex";
+import AlertApp from "@/components/shared/Alert";
 export default {
   data() {
     return {
       BasketText: "your Basket is Empty!",
       Basket: [],
+      showDismissibleAlert: false,
+      responseStatus: "",
+      totalCost: 0,
     };
   },
   computed: {
-    ...mapGetters(["getMenuItems"]),
+    ...mapGetters(["getMenuItems", "loading"]),
     total() {
-      var totalCost = 0;
-      for (var item in this.Basket) {
-        var individualItem = this.Basket[item];
-        totalCost = +individualItem.price * individualItem.quantity;
+      this.totalCost = 0
+        for (let i = 0; i < this.Basket.length;  i++) {
+        this.totalCost += Number(this.Basket[i].price * this.Basket[i].quantity)
+        // console.log(this.totalCost)
       }
-      return totalCost;
+      return this.totalCost;
     },
-    // getMenuItems() {
-    //   return this.$store.state.menuItems
-    // }
   },
   methods: {
-    //  async addToBasket(item, option) {
-    //    const pizzaExists = await this.Basket.find (
-    //      pizza => pizza.name === item.name && pizza.size === option.size
-    //    )
-    //    if (pizzaExists) {
-    //      pizzaExists.quantity++;
-    //      return;
-    //     //  to prevent push to array
-    //    }
     addToBasket(item, option) {
       const pizzaExists = this.Basket.find(
         (pizza) => pizza.name === item.name && pizza.size === option.size
@@ -121,6 +123,13 @@ export default {
         price: option.price,
         quantity: 1,
       });
+       this.totalCost = 0
+      // for (let i = 0; i < this.Basket.length;  i++) {
+      //   console.log(this.Basket[i])
+      //   // var individualItem = this.Basket[i].price;
+      //   this.totalCost = this.totalCost + this.Basket[i].price * this.Basket[i].quantity
+      //   console.log(this.totalCost)
+      // }
     },
     removeFromBasket(item) {
       this.Basket.splice(this.Basket.indexOf(item), 1); //remove one item from array
@@ -130,9 +139,11 @@ export default {
       if (item.quantity === 0) {
         this.removeFromBasket(item);
       }
+      this.total;
     },
     increaseQuantity(item) {
       item.quantity++;
+           this.total;
     },
     addNewOrder() {
       // this.$store.commit("addOrder", this.Basket);
@@ -140,10 +151,19 @@ export default {
         pizzas: { ...this.Basket },
         creareAt: new Date().toISOString(),
       };
-      this.$store.dispatch("AddOrderItem", order);
-      this.Basket = [];
-      this.BasketText = "Thank you, your order has been placed! :)";
+      this.$store.dispatch("AddOrderItem", order).then((res) => {
+        console.log(res);
+        if (res == "success") {
+          this.responseStatus = res;
+          this.Basket = [];
+          this.showDismissibleAlert = true;
+          this.BasketText = "Thank you, your order has been placed! :)";
+        }
+      });
     },
+  },
+  components: {
+    AlertApp,
   },
   created() {
     this.$store.dispatch("fetchMenuItem");

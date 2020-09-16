@@ -4,6 +4,11 @@
       <div class="row">
         <div class="col-md-6 offset-md-3">
           <div class="div login__content background">
+            <AlertApp
+              :showDismissibleAlert="showDismissibleAlert"
+              :responseStatus="responseStatus"
+              :alertMessage="alertMessage"
+            />
             <form class="form" @submit.prevent="signIn">
               <div>
                 <!-- <p v-if="!currentUser">please login to continue</p> -->
@@ -32,7 +37,13 @@
               </div>
 
               <button type="submit" class="btn btn-block btn-primary">
-                sign in
+                <b-icon
+                  icon="arrow-clockwise"
+                  animation="spin"
+                  font-scale="1"
+                  v-if="respo == undefined"
+                ></b-icon>
+                <template v-else> sign in</template>
               </button>
               <!-- <button type="button" class="btn btn-danger" @click.prevent="signOut()">
       sign out
@@ -47,36 +58,54 @@
 
 <script>
 import { mapGetters } from "vuex";
+import AlertApp from "@/components/shared/Alert";
+
 export default {
   data() {
     return {
       email: "",
       password: "",
+      respo: "value",
+      showDismissibleAlert: false,
+      responseStatus: "",
+      alertMessage: "",
     };
   },
   computed: {
-    ...mapGetters(["user", "error"]),
+    ...mapGetters(["user", "error", "loading"]),
   },
   watch: {
     user(value) {
       if (value !== null && value !== undefined) {
-        this.$router.push("/");
+        this.$router.push("/admin");
       }
     },
   },
   methods: {
     signIn() {
+      this.respo = undefined;
       this.$store
         .dispatch("signUserIn", {
           email: this.email,
           password: this.password,
         })
         .then((res) => {
-          this.$router.push("/");
+          this.respo = res.operationType;
+          console.log(res.message);
+          if (res.message !== undefined) {
+            this.alertMessage = res.message;
+            this.showDismissibleAlert = true;
+            this.responseStatus = "danger";
+          }
+          if (res.operationType !== undefined) {
+            this.$router.push("/admin");
+          }
         });
     },
   },
-  computed: {},
+  components: {
+    AlertApp,
+  },
 };
 </script>
 <style lang="scss" scoped>

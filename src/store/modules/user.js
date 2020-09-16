@@ -4,9 +4,8 @@ const state = {
   user: null
 }
 const mutations = {
-  setNewUser: (state,payload) => {
+  setNewUser: (state, payload) => {
     state.user = payload
-    console.log(state.user)
   }
 }
 const actions = {
@@ -27,7 +26,7 @@ const actions = {
     })
   },
   signUserIn({ commit }, payload) {
-    // commit("setLoading", true);
+    commit("setLoading", true);
     commit("clearError");
     return firebase
       .auth()
@@ -38,20 +37,19 @@ const actions = {
           email: user.user.email,
           fbKeys: {}
         };
-        // commit("setLoading", false);
-        // console.log(newUser);
-        return user
+        commit("setLoading", false);
         commit("setNewUser", newUser);
+        return 'success'
       })
       .catch((err) => {
-        // commit("setLoading", false);
+        commit("setLoading", false);
         commit("setError", err);
-        return err
         console.log(err);
+        return err
       });
   },
   autoSignin({ commit }, payload) {
-    commit("setNewUser", { 
+    commit("setNewUser", {
       id: payload.uid,
     });
   },
@@ -85,7 +83,7 @@ const actions = {
 }
 
 const getters = {
-  user: state => state.user
+  user: (state) => { return state.user }
 }
 export default {
   state,

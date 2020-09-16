@@ -13,11 +13,13 @@
           <!-- <router-link to="/signUp" class="nav-link">SignUp</router-link> -->
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto" v-else>
-          <router-link to="/new-pizza" class="nav-link">new pizza</router-link>
-          <router-link to="/manege-menu" class="nav-link"
-            >manege menu</router-link
-          >
-          <router-link to="/clients-orders" tag="li" class="nav-item">
+          <router-link to="/admin/new-pizza" tag="li" class="nav-item">
+            <a href="#" class="nav-link"> new pizza </a>
+          </router-link>
+          <router-link to="/admin/manege-menu" tag="li" class="nav-item">
+            <a href="#" class="nav-link"> manege menu </a>
+          </router-link>
+          <router-link to="/admin/clients-orders" tag="li" class="nav-item">
             <a href="#" class="nav-link"> clients orders </a>
           </router-link>
           <b-nav-item class="nav-item" @click.prevent="logout"

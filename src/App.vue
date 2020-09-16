@@ -1,26 +1,10 @@
 <template>
   <div id="app">
     <app-header></app-header>
-    <!-- <div class="container"> -->
     <div class="content">
       <transition name="fade">
         <router-view></router-view>
       </transition>
-    </div>
-
-    <!-- </div> -->
-    <div class="container" style="padding-bottom: 7rem !important;">
-      <div class="row">
-        <div class="col-md-4 col-sm-12">
-          <router-view name="ordering-guide"></router-view>
-        </div>
-        <div class="col-md-4 col-sm-12">
-          <router-view name="delivery"></router-view>
-        </div>
-        <div class="col-md-4 col-sm-12">
-          <router-view name="history"></router-view>
-        </div>
-      </div>
     </div>
     <app-footer></app-footer>
   </div>
@@ -36,8 +20,6 @@ export default {
     AppFooter,
   },
   created() {
-    // this.$store.dispatch('setMenuRef', dbMenuRef);
-    // this.$store.dispatch('setOrdersRef', dbOrdersRef);
   },
 };
 </script>
@@ -85,6 +67,7 @@ export default {
 .content {
   padding-top: 100px;
   padding-bottom: 50px;
+  min-height: 100vh;
 }
 .background {
   background: rgba(238, 238, 238, 0.8);

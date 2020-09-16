@@ -42,9 +42,9 @@ const actions = {
       });
   },
   AddOrderItem: ({ commit }, payload) => {
-    // commit("setLoading", true);
+    commit("setLoading", true);
     commit("clearError");
-    firebase
+    return firebase
       .database().ref('orders')
       .push(payload)
       .then((orders) => {
@@ -53,11 +53,14 @@ const actions = {
           ...payload,
           id: key
         });
+        commit("setLoading", false);
+        return "success"
       })
       .catch((err) => {
-        // commit("setLoading", false);
+        commit("setLoading", false);
         commit("setError", err);
         console.log(err);
+        return err
       });
   },
   removeOrderItem: ({ commit}, key) => {

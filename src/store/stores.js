@@ -6,7 +6,6 @@ import orders from './modules/orders'
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
-
   modules: {
     menu,
     users,
@@ -23,10 +22,16 @@ export const store = new Vuex.Store({
     clearError(state) {
       state.error = null;
     },
+    setLoading (state, payload) {
+      state.loading = payload;
+    }
   },
   getters: {
     error(state) {
       return state.error;
     },
+    loading (state) {
+      return state.loading;
+    }
   },
 });

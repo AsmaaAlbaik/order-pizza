@@ -40,9 +40,9 @@ const actions = {
       });
   },
   AddMenuItem: ({ commit }, payload) => {
-    // commit("setLoading", true);
+    commit("setLoading", true);
     commit("clearError");
-    firebase
+    return firebase
       .database().ref('menu')
       .push(payload)
       .then((menu) => {
@@ -51,11 +51,14 @@ const actions = {
           ...payload,
           id: key
         });
+        commit("setLoading", false);
+        return 'success';
       })
       .catch((err) => {
-        // commit("setLoading", false);
+        commit("setLoading", false);
         commit("setError", err);
         console.log(err);
+        return err;
       });
   },
   removeMenuItem: ({ commit}, key) => {
@@ -74,10 +77,6 @@ const actions = {
         console.log(err);
       });
   }
-  //    setMenuRef: firebaseAction(({ bindFirebaseRef  }, { ref }) => {
-  //     // this will unbind any previously bound ref to 'todos'
-  //     bindFirebaseRef('menuItems', ref)
-  //   })
 }
 const getters = {
   getMenuItems: state => state.menuItems

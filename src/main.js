@@ -1,32 +1,14 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-import { routes } from './router/routes.js'
+import router  from './router/routes.js'
 import { store } from './store/stores.js'
 import accounting from 'accounting-js'
 import App from './App.vue'
 import * as firebase from 'firebase'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-// Install BootstrapVue
 Vue.use(BootstrapVue)
-// Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
-
-Vue.use(VueRouter);
-
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-
-const router = new VueRouter({
-  routes,
-  mode: 'history',
-  scrollBehavior(to, from, savedPosition) {
-    if (to.hash) {
-      return {
-        selector: to.hash
-      }
-    }
-  }
-});
 
 Vue.filter('currency', function (value) {
   return accounting.formatMoney(value)
@@ -49,7 +31,6 @@ new Vue({
     // check if the user state token id change 
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log("token exist")
         this.$store.dispatch('autoSignin', user)
         // this.$store.dispatch('fetchUserData')
       }

@@ -17,8 +17,8 @@
         </router-link>
       </ul>
     </nav>
-    <transition name="slide" type="animation" appear>
+    <!-- <transition name="fade"> -->
       <router-view />
-    </transition>
+    <!-- </transition> -->
   </div>
 </template>

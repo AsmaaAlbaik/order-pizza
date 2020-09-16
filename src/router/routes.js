@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from '../store/modules/user.js'
-import auth from './auth'
+import { store } from '../store/stores.js'
+Vue.use(VueRouter)
 
 import Home from '@/components/Visitor/Home.vue'
+import Asmaa from '@/components/Asmaa.vue'
 const Menu = () => import(/*webpackChunkName: "Menu"*/'@/components/Visitor/Menu.vue')
 const About = () => import(/*webpackChunkName: "About"*/'@/components/Visitor/About.vue')
 const Contact = () => import(/*webpackChunkName: "Contact"*/'@/components/Visitor/Contact.vue')
@@ -19,7 +20,7 @@ const SignIn = () => import(/*webpackChunkName: "SignIn"*/'@/components/User/Log
 const SignUp = () => import(/*webpackChunkName: "SignUp"*/ '@/components/User/SignUp.vue')
 const OrderingGuide = () => import(/*webpackChunkName: "OrderingGuide"*/ '@/components/Visitor/OrderingGuide.vue')
 
-export const routes = [
+const routes = [
   {
     path: '/', name: 'homeLink', components: {
       default: Home,
@@ -27,6 +28,11 @@ export const routes = [
       'delivery': Delivery,
       'history': History,
     }, meta: {
+      public: true,
+    }
+  },
+    {
+    path: '/asmaa/:id', name: 'Asmaa', component: Asmaa, meta: {
       public: true,
     }
   },
@@ -39,7 +45,7 @@ export const routes = [
   {
     path: '/signUp', name: 'SignUp', component: SignUp, meta: {
       public: true,
-      onlyLoggedOut: true,
+      onlyLoggedOut: false,
     }
   },
   {
@@ -49,19 +55,15 @@ export const routes = [
   },
   {
     path: '/admin', name: 'adminLink', component: Admin, meta: { public: false }, 
-    beforeEnter: auth
   },
   {
-    path: '/clients-orders', name: 'ClientsOrders' , component: ClientsOrders, meta: { public: false},
-    beforeEnter: auth
+    path: '/admin/clients-orders', name: 'ClientsOrders', component: ClientsOrders, meta: { public: false },
   },
   {
-    path: '/manege-menu', name: 'ManegeMenu' , component: ManegeMenu, meta: { public: false },
-    beforeEnter: auth
+    path: '/admin/manege-menu', name: 'ManegeMenu', component: ManegeMenu, meta: { public: false },
   },
   {
-    path: '/new-pizza', name: 'addNewPizza' , component: addNewPizza, meta: { public: false },
-    beforeEnter: auth
+    path: '/admin/new-pizza', name: 'addNewPizza', component: addNewPizza, meta: { public: false },
   },
   {
     path: '/about', name: 'aboutLink', component: About, children: [
@@ -69,7 +71,10 @@ export const routes = [
       { path: '/delivery', component: Delivery },
       { path: '/history', component: History },
       { path: '/ordering-guide', component: OrderingGuide }
-    ]
+    ],
+    meta: {
+      public: true,
+    }
   },
   {
     path: '*', redirect: '/', meta: {
@@ -86,8 +91,6 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   // the pages which just the authentication user can visit
-  console.log('from route')
-  console.log(store.getters.user)
   const authenticated = store.getters.user !== null
   // the pages which just the visitor can visit
   const onlyLoggedOut = to.matched.some(record => record.meta.onlyLoggedOut)
@@ -104,6 +107,8 @@ router.beforeEach((to, from, next) => {
   if (authenticated && onlyLoggedOut) {
     return next('/')
   }
-  // if user authentication and the route is not public as timeline
+  // if user authentication and the route is not public
   next()
 })
+
+export default router;

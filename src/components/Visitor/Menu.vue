@@ -61,7 +61,7 @@
             </tbody>
           </table>
           <p>Total Order {{ total | currency }}</p>
-          <button class="btn btn-block btn-success" @click="addNewOrder">
+          <button class="btn btn-block btn-success mb-5" @click="addNewOrder">
             <b-icon
               icon="arrow-clockwise"
               animation="spin"
